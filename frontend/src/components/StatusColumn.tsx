@@ -6,11 +6,24 @@ type Props = {
   status: TaskStatus;
   tasks: ApiTask[];
   onTaskClick: (task: ApiTask) => void;
+  onDropTask?: (taskId: string) => void;
 };
 
-export function StatusColumn({ status, tasks, onTaskClick }: Props) {
+export function StatusColumn({ status, tasks, onTaskClick, onDropTask }: Props) {
   return (
-    <section className="flex flex-col bg-surface border border-border rounded-lg p-4 min-h-[200px]">
+    <section
+      className="flex flex-col bg-surface border border-border rounded-lg p-4 min-h-[200px]"
+      onDragOver={(e) => {
+        if (!onDropTask) return;
+        e.preventDefault();
+      }}
+      onDrop={(e) => {
+        if (!onDropTask) return;
+        e.preventDefault();
+        const taskId = e.dataTransfer.getData("text/task-id");
+        if (taskId) onDropTask(taskId);
+      }}
+    >
       <header className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-medium">{STATUS_LABELS[status]}</h3>
         <span className="text-xs text-muted">{tasks.length}</span>
@@ -19,7 +32,14 @@ export function StatusColumn({ status, tasks, onTaskClick }: Props) {
         {tasks.length === 0 ? (
           <p className="text-xs text-muted italic">no tasks</p>
         ) : (
-          tasks.map((t) => <TaskCard key={t.id} task={t} onClick={onTaskClick} />)
+          tasks.map((t) => (
+            <TaskCard
+              key={t.id}
+              task={t}
+              onClick={onTaskClick}
+              draggable={Boolean(onDropTask)}
+            />
+          ))
         )}
       </div>
     </section>

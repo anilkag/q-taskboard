@@ -4,6 +4,17 @@ A fullstack project management app for managing projects, tasks, and team member
 
 **Tech Stack:** React 18 + Vite + TypeScript (frontend) · Django 5 + Django REST Framework + SimpleJWT (backend) · PostgreSQL 16
 
+## Assignment deliverables
+
+| Doc | Purpose |
+|-----|---------|
+| [`REVIEW.md`](REVIEW.md) | Part 1 code review + curl proof |
+| [`DESIGN_NOTES.md`](DESIGN_NOTES.md) | Part 3b activity-write rollback choice |
+| [`TERMINAL_LOG.md`](TERMINAL_LOG.md) | Setup, tests, curl demos, export notes |
+| [`RECORDING.md`](RECORDING.md) | Loom / screen-recording link |
+
+**Parts completed:** 2 (SQL injection fix), 3a (comments), 3b (activity feed), 3c (Airtable upsert + retries).
+
 ## Quick Setup (Docker — Recommended)
 
 ```bash

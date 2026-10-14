@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from users.serializers import UserSerializer
-from .models import Project, Membership, Task
+from .models import Project, Membership, Task, Comment, Activity
 
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -46,3 +46,23 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ['id', 'name', 'description', 'owner_id', 'owner', 'memberships', 'tasks', 'created_at', 'updated_at']
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'body', 'author', 'created_at']
+
+
+class ActivitySerializer(serializers.ModelSerializer):
+    actor = UserSerializer(read_only=True)
+    task_id = serializers.SerializerMethodField()
+
+    def get_task_id(self, obj):
+        return str(obj.task_id) if obj.task_id else None
+
+    class Meta:
+        model = Activity
+        fields = ['id', 'action', 'actor', 'task_id', 'metadata', 'created_at']

@@ -9,6 +9,11 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taskboard -d taskboard"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
 
   backend:
     build: ./backend
@@ -18,14 +23,17 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
     environment:
       POSTGRES_DB: taskboard
       POSTGRES_USER: taskboard
       POSTGRES_PASSWORD: taskboard
       POSTGRES_HOST: db
       POSTGRES_PORT: "5432"
-      DJANGO_SECRET_KEY: dev-secret-change-me
+      DJANGO_SECRET_KEY: dev-secret-change-me-in-production-32b
       DEBUG: "true"
 
   frontend:

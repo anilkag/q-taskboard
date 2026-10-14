@@ -75,3 +75,22 @@ class TestLogin:
             'password': 'password123',
         }, format='json')
         assert response.status_code == 401
+
+
+@pytest.mark.django_db
+class TestMe:
+    def test_requires_auth(self, client):
+        response = client.get('/api/users/me')
+        assert response.status_code == 401
+
+    def test_returns_current_user(self, client):
+        User.objects.create_user(email='test@example.com', name='Test', password='password123')
+        resp = client.post('/api/auth/login', {
+            'email': 'test@example.com',
+            'password': 'password123',
+        }, format='json')
+        client.credentials(HTTP_AUTHORIZATION=f"Bearer {resp.data['token']}")
+        response = client.get('/api/users/me')
+        assert response.status_code == 200
+        assert response.data['user']['email'] == 'test@example.com'
+        assert response.data['user']['name'] == 'Test'
